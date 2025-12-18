@@ -27,6 +27,21 @@ jobs:
               run: |
                   git submodule update --remote --merge
 
+            - name: Commit and Push Submodule Update
+              run: |
+                  git config --global user.name 'GitHub Actions'
+                  git config --global user.email 'actions@github.com'
+
+                  if [[ -n $(git status -s) ]]; then
+                    echo "Content submodule updated. Committing..."
+                    
+                    git add content
+                    git commit -m "chore: auto update content submodule [skip ci]"
+                    git push
+                  else
+                    echo "No changes to commit."
+                  fi
+
             - name: Install Node.js
               uses: actions/setup-node@v4
 
