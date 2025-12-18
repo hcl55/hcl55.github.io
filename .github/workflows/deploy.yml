@@ -23,6 +23,10 @@ jobs:
                   submodules: recursive
                   fetch-depth: 0
 
+            - name: Update Content Submodule
+              run: |
+                  git submodule update --remote --merge
+
             - name: Install Node.js
               uses: actions/setup-node@v4
 
