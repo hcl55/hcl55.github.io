@@ -50,7 +50,7 @@ export const siteConfig: SiteConfig = {
 	// 顶栏标题配置
 	navbarTitle: {
 		// 顶栏标题文本
-		text: "博客",
+		text: "超高校级の幸运",
 		// 顶栏标题图标路径，默认使用 public/assets/home/home.png
 		icon: "assets/home/home.png",
 	},
@@ -628,12 +628,7 @@ export const pioConfig: import("./types/config").PioConfig = {
 	hiddenOnMobile: true, // 默认在移动设备上隐藏
 	dialog: {
 		welcome: "欢迎来到雪银星月的博客!", // 欢迎词
-		touch: [
-			"哼哼！",
-			"要注意休息哦!",
-			"HENTAI！",
-			"不许戳我！",
-		], // 触摸提示
+		touch: ["哼哼！", "要注意休息哦!", "HENTAI！", "不许戳我！"], // 触摸提示
 		home: "我是这里的管家!", // 首页提示
 		skin: ["想看看我的新衣服吗?", "怎么样？好看吗~"], // 换装提示
 		close: "QWQ 拜了喵~", // 关闭提示
