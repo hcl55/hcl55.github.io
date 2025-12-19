@@ -18,7 +18,11 @@ pnpm-debug.log*
 .env.production
 
 # content repository (submodule mode)
+/content/
 *.backup
+public/images/
+src/content
+src/data/
 
 # Large zip files
 *.zip
