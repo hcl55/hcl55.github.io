@@ -36,13 +36,13 @@ let currentTime = 0;
 // 歌曲总时长，默认为 0
 let duration = 0;
 // 音量，默认为 0.7
-let volume = 0.7;
+let volume = 0.1;
 // 是否静音，默认为 false
 let isMuted = false;
 // 是否正在加载，默认为 false
 let isLoading = false;
 // 是否随机播放，默认为 false
-let isShuffled = false;
+let isShuffled = true;
 // 循环模式，0: 不循环, 1: 单曲循环, 2: 列表循环，默认为 0
 let isRepeating = 0;
 // 错误信息，默认为空字符串
