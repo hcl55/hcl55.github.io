@@ -20,9 +20,6 @@ pnpm-debug.log*
 # content repository (submodule mode)
 content/
 *.backup
-public/images/
-src/content/
-src/data/
 
 # Large zip files
 *.zip
