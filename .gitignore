@@ -21,7 +21,7 @@ pnpm-debug.log*
 content/
 *.backup
 public/images/
-src/content
+src/content/
 src/data/
 
 # Large zip files
