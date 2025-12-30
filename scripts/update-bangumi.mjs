@@ -27,7 +27,7 @@ async function getUserIdFromConfig() {
 				!userId
 			) {
 				console.warn(
-					"警告: src/config.ts 中的 userId 似乎是默认值。",
+					"Warning: userId in src/config.ts appears to be a default value.",
 				);
 				return userId;
 			}
@@ -35,7 +35,7 @@ async function getUserIdFromConfig() {
 		}
 		throw new Error("Could not find bangumi.userId in config.ts");
 	} catch (error) {
-		console.error("✘ 无法从 config.ts 读取 Bangumi ID");
+		console.error("✘ Failed to read Bangumi ID from config.ts");
 		throw error;
 	}
 }
@@ -59,17 +59,34 @@ async function getAnimeModeFromConfig() {
 // 模拟延迟防止 API 限制
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-async function fetchSubjectPersons(subjectId) {
+async function fetchSubjectDetail(subjectId) {
 	try {
-		const response = await fetch(
-			`${API_BASE}/v0/subjects/${subjectId}/persons`,
-		);
-		if (!response.ok) return [];
-		const data = await response.json();
-		return Array.isArray(data) ? data : [];
+		const response = await fetch(`${API_BASE}/v0/subjects/${subjectId}`);
+		if (!response.ok) return null;
+		return await response.json();
 	} catch (error) {
-		return [];
+		return null;
 	}
+}
+
+function getStudioFromInfobox(infobox) {
+	if (!Array.isArray(infobox)) return "Unknown";
+
+	const targetKeys = ["动画制作", "制作", "製作", "开发"];
+
+	for (const key of targetKeys) {
+		const item = infobox.find((i) => i.key === key);
+		if (item) {
+			if (typeof item.value === "string") {
+				return item.value;
+			}
+			if (Array.isArray(item.value)) {
+				const validItem = item.value.find((v) => v.v);
+				if (validItem) return validItem.v;
+			}
+		}
+	}
+	return "Unknown";
 }
 
 async function fetchCollection(userId, type) {
@@ -78,7 +95,7 @@ async function fetchCollection(userId, type) {
 	const limit = 50;
 	let hasMore = true;
 
-	console.log(`正在获取类型: ${type}...`);
+	console.log(`Fetching type: ${type}...`);
 
 	while (hasMore) {
 		const url = `${API_BASE}/v0/users/${userId}/collections?subject_type=2&type=${type}&limit=${limit}&offset=${offset}`;
@@ -87,7 +104,9 @@ async function fetchCollection(userId, type) {
 
 			if (!response.ok) {
 				if (response.status === 404) {
-					console.log(`   用户 ${userId} 不存在或没有此类型的数据。`);
+					console.log(
+						`   User ${userId} does not exist or has no data of this type.`,
+					);
 					return [];
 				}
 				throw new Error(`API Error ${response.status}`);
@@ -97,7 +116,9 @@ async function fetchCollection(userId, type) {
 
 			if (data.data && data.data.length > 0) {
 				allData = [...allData, ...data.data];
-				process.stdout.write(`   已获取 ${allData.length} 条数据...\r`);
+				process.stdout.write(
+					`   Fetched ${allData.length} records...\r`,
+				);
 			}
 
 			if (!data.data || data.data.length < limit) {
@@ -107,7 +128,7 @@ async function fetchCollection(userId, type) {
 				await delay(300);
 			}
 		} catch (e) {
-			console.error(`\n获取失败 (Type ${type}):`, e.message);
+			console.error(`\nFetch failed (Type ${type}):`, e.message);
 			hasMore = false;
 		}
 	}
@@ -123,38 +144,35 @@ async function processData(items, status) {
 	for (const item of items) {
 		count++;
 		process.stdout.write(
-			`[${status}] 处理进度: ${count}/${total} (${item.subject_id})\r`,
+			`[${status}] Processing progress: ${count}/${total} (${item.subject_id})\r`,
 		);
 
-		const subjectPersons = await fetchSubjectPersons(item.subject_id);
-		await delay(100);
+		const subjectDetail = await fetchSubjectDetail(item.subject_id);
+		await delay(150);
 
 		const year = item.subject?.date
 			? item.subject.date.slice(0, 4)
 			: "Unknown";
 
-		const rating = item.subject?.score
-			? Number.parseFloat(item.subject.score.toFixed(1))
-			: item.rate
-				? Number.parseFloat(item.rate.toFixed(1))
+		const rating = item.rate
+			? Number.parseFloat(item.rate.toFixed(1))
+			: item.subject?.score
+				? Number.parseFloat(item.subject.score.toFixed(1))
 				: 0;
 
 		const progress = item.ep_status || 0;
 		const totalEpisodes = item.subject?.eps || progress;
 
-		let studio = "Unknown";
-		if (Array.isArray(subjectPersons)) {
-			const priorities = ["动画制作", "製作", "制作"];
-			for (const relation of priorities) {
-				const match = subjectPersons.find(
-					(p) => p.relation === relation,
-				);
-				if (match?.name) {
-					studio = match.name;
-					break;
-				}
-			}
-		}
+		const studio = subjectDetail
+			? getStudioFromInfobox(subjectDetail.infobox)
+			: "Unknown";
+
+		const description = (
+			subjectDetail?.summary ||
+			item.subject?.short_summary ||
+			item.subject?.name_cn ||
+			""
+		).trimStart();
 
 		results.push({
 			title:
@@ -162,11 +180,7 @@ async function processData(items, status) {
 			status: status,
 			rating: rating,
 			cover: item.subject?.images?.medium || "/assets/anime/default.webp",
-			description: (
-				item.subject?.short_summary ||
-				item.subject?.name_cn ||
-				""
-			).trimStart(),
+			description: description,
 			episodes: `${totalEpisodes} episodes`,
 			year: year,
 			genre: item.subject?.tags
@@ -182,23 +196,23 @@ async function processData(items, status) {
 			endDate: item.subject?.date || "",
 		});
 	}
-	console.log(`\n✓ 完成 ${status} 列表处理`);
+	console.log(`\n✓ Completed ${status} list processing`);
 	return results;
 }
 
 async function main() {
-	console.log("初始化 Bangumi 数据更新脚本...");
+	console.log("Initializing Bangumi data update script...");
 
 	const animeMode = await getAnimeModeFromConfig();
 	if (animeMode !== "bangumi") {
 		console.log(
-			`检测到当前番剧模式为 "${animeMode}"，跳过 Bangumi 数据更新。`,
+			`Detected current anime mode is "${animeMode}", skipping Bangumi data update.`,
 		);
 		return;
 	}
 
 	const USER_ID = await getUserIdFromConfig();
-	console.log(`读取到 User ID: ${USER_ID}`);
+	console.log(`Read User ID: ${USER_ID}`);
 
 	const collections = [
 		{ type: 3, status: "watching" },
@@ -226,12 +240,12 @@ async function main() {
 	}
 
 	await fs.writeFile(OUTPUT_FILE, JSON.stringify(finalAnimeList, null, 2));
-	console.log(`\n更新完成！数据已保存到: ${OUTPUT_FILE}`);
-	console.log(`总计收录: ${finalAnimeList.length} 部番剧`);
+	console.log(`\nUpdate complete! Data saved to: ${OUTPUT_FILE}`);
+	console.log(`Total collected: ${finalAnimeList.length} anime series`);
 }
 
 main().catch((err) => {
-	console.error("\n✘ 脚本执行出错:");
+	console.error("\n✘ Script execution error:");
 	console.error(err);
 	process.exit(1);
 });
