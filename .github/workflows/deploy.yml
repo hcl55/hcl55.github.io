@@ -104,4 +104,3 @@ jobs:
                   accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
                   projectName: my-blog
                   directory: ./dist
-                  gitHubToken: ${{ secrets.GITHUB_TOKEN }}

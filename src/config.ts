@@ -263,21 +263,21 @@ export const navBarConfig: NavBarConfig = {
 			children: [
 				{
 					name: "GitHub",
-					url: "https://github.com/matsuzaka-yuki/Mizuki",
+					url: "https://github.com/hcl55",
 					external: true,
-					icon: "fa6-brands:github",
+					icon: "fa7-brands:github",
 				},
 				{
 					name: "Bilibili",
-					url: "https://space.bilibili.com/701864046",
+					url: "https://space.bilibili.com/36325121",
 					external: true,
-					icon: "fa7-brands:github",
+					icon: "fa7-brands:bilibili",
 				},
 				{
 					name: "Gitee",
 					url: "https://gitee.com/hcl5",
 					external: true,
-					icon: "mdi:git",
+					icon: "fa7-brands:git-alt",
 				},
 			],
 		},
@@ -361,18 +361,18 @@ export const profileConfig: ProfileConfig = {
 	},
 	links: [
 		{
-			name: "Bilibli",
-			icon: "fa6-brands:bilibili",
-			url: "https://space.bilibili.com/36325121",
-		},
-		{
 			name: "GitHub",
-			icon: "fa6-brands:github",
+			icon: "fa7-brands:github",
 			url: "https://github.com/hcl55",
 		},
 		{
+			name: "Bilibli",
+			icon: "fa7-brands:bilibili",
+			url: "https://space.bilibili.com/36325121",
+		},
+		{
 			name: "Gitee",
-			icon: "mdi:git",
+			icon: "fa7-brands:git-alt",
 			url: "https://gitee.com/hcl5",
 		},
 	],
@@ -431,8 +431,8 @@ export const shareConfig: ShareConfig = {
 };
 
 export const announcementConfig: AnnouncementConfig = {
-	title: "", // 公告标题，填空使用i18n字符串Key.announcement
-	content: "ブログへようこそ！これはサンプルの告知です", // 公告内容
+	title: "公告", // 公告标题，填空使用i18n字符串Key.announcement
+	content: "小站刚建起来没多久，如果有什么问题或者建议，欢迎提出~", // 公告内容
 	closable: true, // 允许用户关闭公告
 	link: {
 		enable: true, // 启用链接
@@ -631,7 +631,7 @@ export const widgetConfigs = {
 
 export const umamiConfig = {
 	enabled: true, // 是否显示Umami统计
-	apiKey: import.meta.env.UMAMI_API_KEY || "api_Zvm7bu1e2PeAWOtFjIPjzlXUm8sutJaI", // API密钥优先从环境变量读取，否则使用配置文件中的值
+	apiKey: import.meta.env.UMAMI_API_KEY, // API密钥优先从环境变量读取，否则使用配置文件中的值
 	baseUrl: "https://api.umami.is", // Umami Cloud API地址
 	scripts: `
 <script defer src="https://cloud.umami.is/script.js" data-website-id="a7e44097-94b4-4308-8cb8-66b718b9d93f"></script>
