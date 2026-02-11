@@ -54,9 +54,9 @@ let showError = false;
 
 // 当前歌曲信息
 let currentSong = {
-	title: "Sample Song",
-	artist: "Sample Artist",
-	cover: "/favicon/favicon.ico",
+	title: "少女祈祷中...",
+	artist: "",
+	cover: "https://hd5.de5.net/icon/1770803650701_record.webp",
 	url: "",
 	duration: 0,
 };
@@ -77,30 +77,14 @@ let progressBar: HTMLElement;
 let volumeBar: HTMLElement;
 
 const localPlaylist = [
-	{
-		id: 1,
-		title: "ひとり上手",
-		artist: "Kaya",
-		cover: "assets/music/cover/hitori.jpg",
-		url: "assets/music/url/hitori.mp3",
-		duration: 240,
-	},
-	{
-		id: 2,
-		title: "眩耀夜行",
-		artist: "スリーズブーケ",
-		cover: "assets/music/cover/xryx.jpg",
-		url: "assets/music/url/xryx.mp3",
-		duration: 180,
-	},
-	{
-		id: 3,
-		title: "春雷の頃",
-		artist: "22/7",
-		cover: "assets/music/cover/cl.jpg",
-		url: "assets/music/url/cl.mp3",
-		duration: 200,
-	},
+	// {
+	// 	id: 1,
+	// 	title: "ひとり上手",
+	// 	artist: "Kaya",
+	// 	cover: "assets/music/cover/hitori.jpg",
+	// 	url: "assets/music/url/hitori.mp3",
+	// 	duration: 240,
+	// },
 ];
 
 // 从localStorage加载音量设置
