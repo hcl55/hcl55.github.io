@@ -44,6 +44,8 @@ jobs:
 
             - name: Install Node.js
               uses: actions/setup-node@v4
+              with:
+                  node-version: 22
 
             - name: Install pnpm
               uses: pnpm/action-setup@v4
@@ -54,6 +56,7 @@ jobs:
             - name: Build Site
               env:
                   PUBLIC_UMAMI_API_KEY: ${{ secrets.PUBLIC_UMAMI_API_KEY }}
+                  BILI_SESSDATA: ${{ secrets.BILI_SESSDATA }}
               run: pnpm build
 
             - name: Upload build artifact
